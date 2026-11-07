@@ -1,0 +1,41 @@
+﻿
+services:
+  postgres:
+    image: postgres:17
+    container_name: gst-postgres
+    environment:
+      POSTGRES_DB: gstdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: exam123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d gstdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    image: docker-skill-exam-2400032290:latest
+    container_name: gst-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "2290:8080"
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: jdbc:postgresql://postgres:5432/gstdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: exam123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

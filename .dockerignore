@@ -1,0 +1,13 @@
+﻿target/
+.git/
+.github/
+.vscode/
+.settings/
+.classpath
+.project
+.gitignore
+.dockerignore
+docker-compose.yml
+.env
+*.log
+HELP.md
